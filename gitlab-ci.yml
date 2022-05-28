@@ -1,0 +1,7 @@
+ build project:
+  image:node:14
+  script:
+   - npm install
+   - npm test
+   - npm build
+   

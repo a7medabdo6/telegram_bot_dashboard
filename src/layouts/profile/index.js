@@ -270,7 +270,7 @@ function Overview() {
                   <Button
                     style={{ color: "white" }}
                     variant="contained"
-                    onClick={handleSubmitForChangePasswordl}
+                    onClick={handleSubmitForChangePassword}
                   >
                     Submit
                   </Button>

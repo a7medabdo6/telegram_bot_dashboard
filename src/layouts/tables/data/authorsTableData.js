@@ -20,13 +20,34 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
+import Button from "@mui/material/Button";
 
 // Images
 import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
+import { useSelector, useDispatch } from "react-redux";
+import { useDeleteUserApi } from "apis/Users";
+import { useEffect, useState } from "react";
+import Modal from "../modal";
 
 export default function data() {
+  const [open2, setOpen2] = useState([]);
+
+  const { mutate: DeleteUserApi } = useDeleteUserApi();
+  const [reresh, setreresh] = useState(false);
+  const { users, error } = useSelector((state) => state.Users);
+  const HandleDelete = (id) => {
+    console.log(id, "id new");
+    DeleteUserApi(id);
+  };
+  useEffect(() => {
+    var numofmodals = [];
+    for (var i = 0; i < users?.length; i++) {
+      numofmodals.push(false);
+    }
+    setOpen2([...numofmodals]);
+  }, [users]);
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
@@ -47,131 +68,87 @@ export default function data() {
       <MDTypography variant="caption">{description}</MDTypography>
     </MDBox>
   );
+  const handleClickOpen2 = (modalvalue, index) => {
+    var allmodals = [...open2];
+    console.log(index, "index");
 
+    allmodals[index] = modalvalue;
+    setOpen2(allmodals);
+  };
+  useEffect(() => {
+    console.log(open2, "open2");
+  }, [users, open2]);
+  const handleClose2 = () => {
+    setOpen2(false);
+  };
+  const Data = () => {
+    let arrays = [];
+    if (users) {
+      for (var i = 0; i < users?.length; i++) {
+        arrays.push({
+          author: <Author image={team2} name={users[i].user_name} email="" />,
+          function: <Job title={users[i].email} description="" />,
+          status: (
+            <MDBox ml={-1}>
+              <MDBadge
+                badgeContent={users[i].active ? "active" : "Not Active"}
+                color={users[i].active ? "success" : "dark"}
+                variant="gradient"
+                size="sm"
+              />
+            </MDBox>
+          ),
+          employed: (
+            <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+              {users[i].wallet}
+            </MDTypography>
+          ),
+          action: (
+            <MDTypography component="div" variant="caption" color="text" fontWeight="medium">
+              <Button
+                onClick={(e) => {
+                  let id = users[i]?.id;
+                  console.log(id);
+                  HandleDelete(e.target.id);
+                }}
+                style={{ backgroundColor: "#f44336", color: "white" }}
+                variant="contained"
+                id={users[i]?.id}
+              >
+                delete
+              </Button>
+              <Button
+                onClick={(e) => {
+                  handleClickOpen2(true, e.target.id);
+                }}
+                style={{
+                  backgroundColor: "linear-gradient(195deg, #49a3f1, #1A73E8)",
+                  color: "white",
+                  marginInline: "5px",
+                }}
+                variant="contained"
+                id={i}
+              >
+                Edit
+              </Button>
+              <Modal open={open2} data={users[i]} index={i} setopen={setOpen2} />
+            </MDTypography>
+          ),
+        });
+      }
+    }
+
+    return arrays;
+  };
   return {
     columns: [
-      { Header: "author", accessor: "author", width: "45%", align: "left" },
-      { Header: "function", accessor: "function", align: "left" },
+      { Header: "name", accessor: "author", width: "45%", align: "left" },
+      { Header: "email", accessor: "function", align: "left" },
       { Header: "status", accessor: "status", align: "center" },
-      { Header: "employed", accessor: "employed", align: "center" },
+      { Header: "wallet", accessor: "employed", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],
 
-    rows: [
-      {
-        author: <Author image={team2} name="John Michael" email="john@creative-tim.com" />,
-        function: <Job title="Manager" description="Organization" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            23/04/18
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team3} name="Alexa Liras" email="alexa@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            11/01/19
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team4} name="Laurent Perrier" email="laurent@creative-tim.com" />,
-        function: <Job title="Executive" description="Projects" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            19/09/17
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team3} name="Michael Levi" email="michael@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            24/12/08
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team3} name="Richard Gran" email="richard@creative-tim.com" />,
-        function: <Job title="Manager" description="Executive" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            04/10/21
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team4} name="Miriam Eric" email="miriam@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            14/09/20
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-    ],
+    rows: users ? [...Data()] : [],
   };
 }

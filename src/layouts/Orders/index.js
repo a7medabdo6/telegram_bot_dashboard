@@ -10,14 +10,14 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import DataTable from "examples/Tables/DataTable";
-import { useGetUsersApi } from "apis/Users";
+import DataTable from "examples/Orders/DataTable";
+import { useGetOrdersApi } from "apis/Orders";
 import Button from "@mui/material/Button";
 import * as React from "react";
 
 // Data
-import authorsTableData from "layouts/tables/data/authorsTableData";
-import projectsTableData from "layouts/tables/data/projectsTableData";
+import authorsTableData from "layouts/Orders/data/authorsTableData";
+import projectsTableData from "layouts/Orders/data/projectsTableData";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -51,9 +51,9 @@ function Tables() {
 
   const { columns, rows } = authorsTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
-  const { data: GetUsersApi } = useGetUsersApi();
+  const { data: GetOrdersApi } = useGetOrdersApi();
   useEffect(() => {
-    const data = GetUsersApi;
+    const data = GetOrdersApi;
   }, []);
   const submitUser = () => {
     CreateUserApi({
@@ -88,9 +88,14 @@ function Tables() {
                 style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
               >
                 <MDTypography variant="h6" color="white">
-                  Users
+                  Orders
                 </MDTypography>
-                <Button onClick={handleClickOpen} variant="contained" color="error">
+                <Button
+                  style={{ display: "none" }}
+                  onClick={handleClickOpen}
+                  variant="contained"
+                  color="error"
+                >
                   Create
                 </Button>
               </MDBox>
@@ -108,7 +113,7 @@ function Tables() {
         </Grid>
 
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle> Create User</DialogTitle>
+          <DialogTitle> Create Orders</DialogTitle>
           <DialogContent>
             <Grid container spacing={6}>
               <Grid item xs={6}>
@@ -127,9 +132,9 @@ function Tables() {
                 <TextField
                   autoFocus
                   margin="dense"
-                  id="name"
-                  label="Email Address"
-                  type="email"
+                  id="order_date"
+                  label="order_date "
+                  type="date"
                   fullWidth
                   variant="outlined"
                   value={email}
